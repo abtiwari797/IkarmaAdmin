@@ -1,0 +1,98 @@
+/* Custom styles for the menu items */
+.custom-menu-item {
+  color: black; /* Default text color */
+}
+
+.custom-menu-item:hover {
+  background-color: #fa8c16 !important; /* Orange background on hover */
+  color: white !important; /* White text on hover */
+}
+
+.ant-menu-item-selected {
+  background-color: #fa8c16 !important; /* Orange background for selected item */
+  color: white !important; /* White text for selected item */
+}
+
+.logo{
+display: flex;
+align-items: center;
+}
+.Klogo{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #fa8c16;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.heading{
+  color: black;
+  font-size: 16px;
+  margin-left: 10px;
+  font-weight: 500;
+}
+
+.navbar{
+  
+}
+
+.search-input{
+  background: rgb(222, 221, 221);
+  border-radius: 25px;
+  height: 6vh;
+}
+
+/* For Webkit-based browsers like Chrome, Safari */
+.custom-content-area::-webkit-scrollbar {
+  display: none;  /* Hides the scrollbar */
+}
+
+/* For Firefox */
+.custom-content-area {
+  scrollbar-width: none;  /* Hides the scrollbar */
+}
+
+.details{
+  width: 100%;
+  min-height: 150vh;
+  display: flex;
+  overflow: hidden;
+}
+
+.details1{
+  width: 70%;
+  overflow: hidden;
+}
+
+.rows{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  
+}
+
+.custom-content-area.col{
+  display: flex;
+  gap: 16px;
+  overflow-x: scroll;
+  width: 100%;
+  
+}
+
+.custom-content-area.events{
+  width: 30%;
+  height: 185vh;
+  overflow-y: scroll;
+}
+
+.card {
+  flex: 1 1 calc(33% - 16px); /* Corrected flex property */
+  margin: 16px; /* Space below each card */
+  min-width: 300px; /* Minimum width for cards */
+  min-height: 300px;
+}
