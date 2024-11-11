@@ -86,7 +86,7 @@ align-items: center;
 
 .custom-content-area.events{
   width: 30%;
-  height: 185vh;
+  height: 205vh;
   overflow-y: scroll;
 }
 
@@ -95,4 +95,44 @@ align-items: center;
   margin: 16px; /* Space below each card */
   min-width: 300px; /* Minimum width for cards */
   min-height: 300px;
+}
+
+/* Custom styles for alternating row colors */
+.table-row-light {
+  background-color: #F7F6F3;
+}
+
+.table-row-dark {
+  background-color: #FFFFFF;
+}
+
+/* Remove the default border and customize table header */
+.ant-table-thead > tr > th {
+  background: #FAF9F7;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Table content styling */
+.ant-table-tbody > tr > td {
+  text-align: center;
+  font-size: 14px;
+  padding: 16px;
+}
+
+/* Link styling for 'See all' */
+.ant-card-extra a {
+  color: #FF7A45;
+  font-weight: 500;
+}
+
+/* Button styling */
+.ant-btn-primary {
+  background-color: #FF7A45;
+  border-color: #FF7A45;
+}
+
+.ant-btn-danger {
+  background-color: #FF4D4F;
+  border-color: #FF4D4F;
 }
