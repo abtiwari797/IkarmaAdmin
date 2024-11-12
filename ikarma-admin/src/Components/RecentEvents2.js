@@ -1,5 +1,6 @@
 import React from "react";
 import { Col, Card, Tag, Button, Typography } from "antd";
+import { useNavigate } from "react-router-dom";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
@@ -10,7 +11,7 @@ import {
 const { Text } = Typography;
 
 const RecentEvents2 = () => {
-
+  const navigate = useNavigate();
 
   const nominations = [
     {
@@ -63,10 +64,11 @@ const RecentEvents2 = () => {
   return (
     <>
       <div className="custom-content-area events">
-      <p className="heading">Recent Events</p>
+        <p className="heading">Recent Events</p>
         <Col className="custom-content-area row">
           {nominations.map((nomination, index) => (
             <Card
+              key={index}
               className="card"
               style={{
                 width: "90%",
@@ -104,6 +106,7 @@ const RecentEvents2 = () => {
                       backgroundColor: "#FF8C42",
                       border: "none",
                     }}
+                    onClick={() => navigate("/nominationdetails")}
                   >
                     Join
                   </Button>
