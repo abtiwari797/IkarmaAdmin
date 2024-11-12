@@ -22,17 +22,10 @@ const Statistics = () => {
     data,
     xField: 'month',
     yField: 'nominations',
-    color: '#888888', // Initial bar color (gray)
-    label: {
-      position: 'top',
-      style: {
-        fill: '#000',
-        opacity: 0.6,
-      },
-    },
+    color: '#000000', // Initial bar color (gray)
     columnWidthRatio: 0.6,
     autoFit: true,
-    height: 200,
+    height: 220,
     tooltip: {
       customContent: (title, items) => {
         if (items.length) {
@@ -59,7 +52,7 @@ const Statistics = () => {
           bordered={false}
           style={{
             height: '300px',
-            width: '350px',
+            minWidth: '30%',
             backgroundColor: '#FFF4E5', // Slightly orange background color
           }}
         ></Card>
@@ -70,7 +63,7 @@ const Statistics = () => {
           bordered={false}
           style={{
             height: '300px',
-            width: '350px',
+            minWidth: '30%',
             backgroundColor: '#FFF4E5', // Slightly orange background color
           }}
         >
@@ -83,10 +76,12 @@ const Statistics = () => {
           bordered={false}
           style={{
             height: '300px',
-            width: '350px',
+            minWidth: '30%',
             backgroundColor: '#FFF4E5', // Slightly orange background color
           }}
-        ></Card>
+        >
+           <Column {...config} />
+        </Card>
       </Col>
     </Row>
   );
