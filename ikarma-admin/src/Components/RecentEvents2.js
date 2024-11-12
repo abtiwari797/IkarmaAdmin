@@ -63,12 +63,13 @@ const RecentEvents2 = () => {
   return (
     <>
       <div className="custom-content-area events">
+      <p className="heading">Recent Events</p>
         <Col className="custom-content-area row">
           {nominations.map((nomination, index) => (
             <Card
               className="card"
               style={{
-                width: 300,
+                width: "90%",
                 borderRadius: "10px",
                 overflow: "hidden",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",

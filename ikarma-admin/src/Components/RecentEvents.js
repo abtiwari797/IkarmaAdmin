@@ -1,6 +1,8 @@
-import React from "react";
-import { Card, Avatar, Tag, Col, Button } from "antd";
+import React, { useState } from "react";
+import { Card, Col, Button ,Modal} from "antd";
 import { CalendarOutlined } from "@ant-design/icons";
+import { ToastContainer, toast } from "react-toastify";  // Import Toastify
+import "react-toastify/dist/ReactToastify.css"; 
 
 const nominations = [
     {
@@ -37,6 +39,36 @@ const nominations = [
   
 
 const RecentEvents = () => {
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedNomination, setSelectedNomination] = useState(null);
+  const [actionType, setActionType] = useState("");
+
+  // Show confirmation modal
+  const showConfirmModal = (nomination, action) => {
+    setSelectedNomination(nomination);
+    setActionType(action);
+    setIsModalVisible(true);
+  };
+
+  // Handle confirmation
+  const handleConfirm = () => {
+    if (actionType === "accept") {
+      toast.success(`${selectedNomination.title} accepted!`);
+    } else if (actionType === "decline") {
+      toast.error(`${selectedNomination.title} declined!`);
+    }
+    setIsModalVisible(false);
+    setSelectedNomination(null);
+  };
+
+  // Close modal
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setSelectedNomination(null);
+  };
+
+
   return (
     <>
       <p className="heading">Recent Events</p>
@@ -94,6 +126,7 @@ const RecentEvents = () => {
                   border: "1px solid #ff4d4f",
                   color: "#ff4d4f",
                 }}
+                onClick={() => showConfirmModal(nomination, "decline")}
               >
                 Decline
               </Button>
@@ -103,6 +136,7 @@ const RecentEvents = () => {
                   border: "1px solid #52c41a",
                   color: "#52c41a",
                 }}
+                onClick={() => showConfirmModal(nomination, "accept")}
               >
                 Accept
               </Button>
@@ -110,6 +144,19 @@ const RecentEvents = () => {
           </Card>
         ))}
       </Col>
+
+      <Modal
+        title="Confirmation"
+        visible={isModalVisible}
+        onOk={handleConfirm}
+        onCancel={handleCancel}
+        okText={actionType === "accept" ? "Accept" : "Decline"}
+        cancelText="Cancel"
+      >
+        <p>Are you sure you want to {actionType} this nomination?</p>
+      </Modal>
+
+      <ToastContainer position="top-center" autoClose={3000}/>
     </>
   );
 };

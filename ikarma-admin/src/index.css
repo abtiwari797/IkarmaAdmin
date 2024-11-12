@@ -136,3 +136,12 @@ align-items: center;
   background-color: #FF4D4F;
   border-color: #FF4D4F;
 }
+
+.table-wrapper {
+  overflow-x: auto; /* Enable horizontal scrolling */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for mobile */
+}
+
+.table-wrapper::-webkit-scrollbar {
+  display: none; /* Hide the horizontal scrollbar */
+}
