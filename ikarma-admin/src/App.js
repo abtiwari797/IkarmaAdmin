@@ -3,13 +3,16 @@ import Home from "./Components/Home";
 import NominationDetails from "./Components/NominationDetails";
 import MainLayout from "./Components/MainLayout";  // Import the MainLayout
 import CompnayForm from "./Components/CompanyForm";
+import Login from "./Components/Login";
+import Protected from "./routes/Protected";
 
 const App = () => {
   return (
     <Router>
       <Routes>
         {/* Wrap all routes inside MainLayout */}
-        <Route path="/" element={<MainLayout><Home /></MainLayout>} />
+        <Route path="/" element={<Login/>} />
+        <Route path="/dashboard" element={<MainLayout><Home /></MainLayout>}/>
         <Route path="/nominationdetails" element={<MainLayout><NominationDetails /></MainLayout>} />
         <Route path="/addcompany" element={<MainLayout><CompnayForm/></MainLayout>} />
       </Routes>
