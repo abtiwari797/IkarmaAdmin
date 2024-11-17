@@ -10,7 +10,6 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        {/* Wrap all routes inside MainLayout */}
         <Route path="/" element={<Login/>} />
         <Route path="/dashboard" element={<MainLayout><Home /></MainLayout>}/>
         <Route path="/nominationdetails" element={<MainLayout><NominationDetails /></MainLayout>} />
