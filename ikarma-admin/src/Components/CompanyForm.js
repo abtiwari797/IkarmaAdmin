@@ -2,14 +2,36 @@ import React from "react";
 import { Form, Input, Button, notification } from "antd";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const CompanyForm = () => {
   const [form] = Form.useForm();
 
+  
   // Form submission handler
-  const onFinish = (values) => {
-    console.log("Form Submitted: ", values);
-    toast.success("Company information submitted successfully!");
+  const onFinish = async (values) => {
+    try {
+      // Call the API
+      const response = await axios.post(
+        "https://umbznza169.execute-api.us-east-2.amazonaws.com/nomination/addCompany",
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.TOKEN}`, // Replace with your actual token
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Company information submitted successfully!");
+        form.resetFields(); // Clear the form
+      } else {
+        toast.error("Failed to submit the company information.");
+      }
+    } catch (error) {
+      console.error("API Error:", error);
+      toast.error("An error occurred while submitting the form.");
+    }
   };
 
   // Error handling
@@ -109,7 +131,7 @@ const CompanyForm = () => {
           name="nomination_id"
           rules={[
             { required: true, message: "Please enter the nomination ID" },
-            { type: "number", message: "Nomination ID must be a number" },
+            { type: "text", message: "Nomination ID must be a number" },
           ]}
         >
           <Input type="number" />

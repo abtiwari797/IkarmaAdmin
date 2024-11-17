@@ -1,168 +1,167 @@
-import React from "react";
-import { Col, Card, Tag, Button, Typography } from "antd";
+import React, { useEffect, useState } from "react";
+import { Col, Card, Tag, Button, Typography, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
-  DollarOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
+import axios from "axios";
+import { fallbackData } from "../lib/fallbackData";
 
 const { Text } = Typography;
 
 const RecentEvents2 = () => {
   const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const nominations = [
-    {
-      title: "Nomination 1",
-      description: "Details for nomination 1",
-      date: "Feb 12, 2023",
-      time: "10:00 AM",
-      price: "$20",
-      currentAttendees: 50,
-      maxAttendees: 100,
-    },
-    {
-      title: "Nomination 2",
-      description: "Details for nomination 2",
-      date: "Mar 10, 2023",
-      time: "2:00 PM",
-      price: "$30",
-      currentAttendees: 80,
-      maxAttendees: 150,
-    },
-    {
-      title: "Nomination 3",
-      description: "Details for nomination 3",
-      date: "Apr 5, 2023",
-      time: "9:00 AM",
-      price: "$15",
-      currentAttendees: 60,
-      maxAttendees: 120,
-    },
-    {
-      title: "Nomination 4",
-      description: "Details for nomination 4",
-      date: "May 20, 2023",
-      time: "11:00 AM",
-      price: "$25",
-      currentAttendees: 40,
-      maxAttendees: 100,
-    },
-    {
-      title: "Nomination 5",
-      description: "Details for nomination 5",
-      date: "Jun 15, 2023",
-      time: "1:00 PM",
-      price: "$10",
-      currentAttendees: 30,
-      maxAttendees: 80,
-    },
-  ];
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get(
+          "https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/eventlist",
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.TOKEN}`,
+            },
+          }
+        );
+        setEvents(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setEvents(fallbackData.data);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  const calculateSeatAvailability = (event) => {
+    const remainingSeats = event.maxallowedparticipants - event.peopleJoined;
+    const totalSeats = event.maxallowedparticipants;
+    const remainingPercentage = (remainingSeats / totalSeats) * 100;
+    console.log(remainingPercentage);
+
+    let seatStatus;
+    let seatColor;
+    if (remainingPercentage > 50) {
+      seatStatus = "Available";
+      seatColor = "green";
+    } else if (remainingPercentage < 80) {
+      seatStatus = "Limited seat";
+      seatColor = "orange"; 
+    } else if (remainingPercentage < 85) {
+      seatStatus = "Full";
+      seatColor = "red"; 
+    } else {
+      seatStatus = "Full";
+      seatColor = "red"; 
+    }
+
+    return {
+      remainingSeats,
+      seatStatus,
+      seatColor
+    };
+  };
+
+  if (loading) {
+    return <Spin size="large" />;
+  }
 
   return (
-    <>
-      <div className="custom-content-area events">
-        <p className="heading">Recent Events</p>
-        <Col className="custom-content-area row">
-          {nominations.map((nomination, index) => (
-            <Card
-              key={index}
-              className="card"
-              style={{
-                width: "90%",
-                borderRadius: "10px",
-                overflow: "hidden",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              }}
-              cover={
-                <div style={{ position: "relative" }}>
-                  <img
-                    alt="Event Cover"
-                    src="/images.jpg" // Replace with actual image URL
-                    style={{
-                      height: "150px",
-                      objectFit: "cover",
-                      width: "100%",
-                    }}
-                  />
-                  <Tag
-                    color="orange"
-                    style={{
-                      position: "absolute",
-                      top: "10px",
-                      left: "10px",
-                    }}
-                  >
-                    Limited Seats
-                  </Tag>
-                  <Button
-                    type="primary"
-                    style={{
-                      position: "absolute",
-                      top: "10px",
-                      right: "10px",
-                      backgroundColor: "#FF8C42",
-                      border: "none",
-                    }}
-                    onClick={() => navigate("/nominationdetails")}
-                  >
-                    Join
-                  </Button>
-                </div>
-              }
-              bodyStyle={{ padding: "16px" }}
-            >
-              <h3 style={{ marginBottom: "8px" }}>{nomination.title}</h3>
-              <Text type="secondary">UPCOMING</Text>
-              <div style={{ margin: "8px 0", fontSize: "12px" }}>
-                <CalendarOutlined style={{ marginRight: "4px" }} />
-                {nomination.date} &nbsp;&nbsp;
-                <ClockCircleOutlined style={{ marginRight: "4px" }} />
-                {nomination.time}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginTop: "8px",
-                }}
-              >
-                <div
+    <div className="custom-content-area events">
+      <p className="heading">Recent Events</p>
+      <Col className="custom-content-area row">
+        {events.map((event) => (
+          <Card
+            key={event.id}
+            className="card"
+            style={{
+              width: "90%",
+              borderRadius: "10px",
+              overflow: "hidden",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            }}
+            cover={
+              <div style={{ position: "relative" }}>
+                <img
+                  alt="Event Cover"
+                  src={event.imgurl || "/default-image.jpg"} // Fallback to default image
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    fontSize: "14px",
+                    height: "150px",
+                    objectFit: "cover",
+                    width: "100%",
                   }}
-                >
-                  <DollarOutlined
-                    style={{ color: "#FFD700", marginRight: "4px" }}
-                  />
-                  <Text>{nomination.price}</Text>
-                </div>
-                <Text>Public</Text>
-                <Text>Paid</Text>
-              </div>
-              <div
+                />
+                {event.maxallowedparticipants > 0 && (
+                <Tag
+                color={calculateSeatAvailability(event).seatColor}
                 style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  marginTop: "8px",
-                  fontSize: "14px",
+                  position: "absolute",
+                  top: "10px",
+                  left: "10px",
                 }}
               >
-                <TeamOutlined style={{ marginRight: "4px" }} />
-                <Text>
-                  {nomination.currentAttendees} / {nomination.maxAttendees}
-                </Text>
+                {`${calculateSeatAvailability(event).seatStatus}`}
+              </Tag>
+                )}
+                <Button
+                  type="primary"
+                  style={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                    backgroundColor: "#FF8C42",
+                    border: "none",
+                  }}
+                  onClick={() => navigate(`/eventdetails/${event.id}`)}
+                >
+                  {event.join ? "Joined" : "Join"}
+                </Button>
               </div>
-            </Card>
-          ))}
-        </Col>
-      </div>
-    </>
+            }
+            bodyStyle={{ padding: "16px" }}
+          >
+            <h3 style={{ marginBottom: "8px" }}>{event.eventname}</h3>
+            <Text type="secondary">{event.subtitle}</Text>
+            <div style={{ margin: "8px 0", fontSize: "12px" }}>
+              <CalendarOutlined style={{ marginRight: "4px" }} />
+              {event.startdatetime} &nbsp;&nbsp;
+              <ClockCircleOutlined style={{ marginRight: "4px" }} />
+              {event.enddatetime}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: "8px",
+              }}
+            >
+              <Text>{event.entry || "Free"}</Text>
+              <Text>{event.type || "Public"}</Text>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "8px",
+                fontSize: "14px",
+              }}
+            >
+              <TeamOutlined style={{ marginRight: "4px" }} />
+              <Text>
+                {event.peopleJoined} / {event.maxallowedparticipants}
+              </Text>
+            </div>
+          </Card>
+        ))}
+      </Col>
+    </div>
   );
 };
 
