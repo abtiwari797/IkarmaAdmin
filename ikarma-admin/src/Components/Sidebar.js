@@ -18,7 +18,7 @@ const Sidebar = () => {
   // Map routes to menu item keys
   const getMenuKeyFromPath = (path) => {
     switch (path) {
-      case "/":
+      case "/dashboard":
         return "1";  // Dashboard
       case "/nominationdetails":
         return "2";  // Nominations
@@ -59,7 +59,7 @@ const Sidebar = () => {
           let path;
           switch (e.key) {
             case "1":
-              path = "/";
+              path = "/dashboard";
               break;
             case "2":
               path = "/nominationdetails";
