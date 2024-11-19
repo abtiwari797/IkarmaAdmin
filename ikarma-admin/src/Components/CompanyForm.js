@@ -101,7 +101,7 @@ const CompanyForm = () => {
         city: Number(values.city),
       }
 
-      if(isValidURL(requestData.website_url))
+      if(!isValidURL(requestData.website_url))
       {
        throw new Error('invalid website URL')
       }

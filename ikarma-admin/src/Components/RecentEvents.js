@@ -16,8 +16,6 @@ const RecentEvents = () => {
 
   const token = useSelector((state) => state.token);
 
-  console.log(" Recent Event Token ",token)
-
   useEffect(() => {
     const fetchNominations = async () => {
       try {
@@ -67,12 +65,12 @@ const RecentEvents = () => {
   }
 
     // Filter nominations with status === 7
-    const filteredNominations = nominations.filter((nomination) => nomination.status >= 7);
+    const filteredNominations = nominations.filter((nomination) => nomination.status >= 0);
 
 
   return (
     <>
-      <p className="heading">Recent Events</p>
+      <p className="heading">Recent Events Requests</p>
       <Col className="custom-content-area col">
         {filteredNominations.map((nomination) => (
           <Card

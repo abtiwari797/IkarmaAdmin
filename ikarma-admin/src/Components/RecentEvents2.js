@@ -18,7 +18,6 @@ const RecentEvents2 = () => {
   const [loading, setLoading] = useState(true);
   const token = useSelector((state) => state.token);
 
-  console.log(" Recent2 Event Token ",token)
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -80,7 +79,7 @@ const RecentEvents2 = () => {
 
   return (
     <div className="custom-content-area events">
-      <p className="heading">Recent Events</p>
+      <p className="heading">Company Events</p>
       <Col className="custom-content-area row">
         {events.map((event) => (
           <Card

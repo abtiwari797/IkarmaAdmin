@@ -59,7 +59,7 @@ align-items: center;
 
 .details{
   width: 100%;
-  min-height: 150vh;
+  min-height: 100vh;
   display: flex;
   overflow: hidden;
 }
@@ -86,7 +86,7 @@ align-items: center;
 
 .custom-content-area.events{
   width: 30%;
-  height: 205vh;
+  height: 100vh;
   overflow-y: scroll;
 }
 
