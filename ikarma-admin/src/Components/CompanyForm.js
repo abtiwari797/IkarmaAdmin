@@ -85,6 +85,10 @@ const CompanyForm = () => {
     }
   }, [selectedState, token]);
 
+
+  function isValidURL(url) {
+    return /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(url);
+  }
   // Form submission handler
   const onFinish = async (values) => {
     try {
@@ -95,6 +99,11 @@ const CompanyForm = () => {
         country: Number(values.country),
         state: Number(values.state),
         city: Number(values.city),
+      }
+
+      if(isValidURL(requestData.website_url))
+      {
+       throw new Error('invalid website URL')
       }
 
 
@@ -118,9 +127,11 @@ const CompanyForm = () => {
       }
     } catch (error) {
       console.error("API Error:", error);
-      toast.error("An error occurred while submitting the form.");
+      toast.error(`An error occurred while submitting the form. ${error}`);
     }
   };
+
+ 
 
   const onFinishFailed = (errorInfo) => {
     notification.error({
@@ -230,7 +241,10 @@ const CompanyForm = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item label="Address 2" name="address2">
+        <Form.Item 
+        label="Address 2" 
+        name="address2" 
+        rules={[{ required: true, message: "Please enter address line 2" }]}>
           <Input />
         </Form.Item>
 
@@ -257,6 +271,14 @@ const CompanyForm = () => {
           label="HR Last Name"
           name="hr_last_name"
           rules={[{ required: true, message: "Please enter HR's last name" }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Website url"
+          name="website_url"
+          rules={[{ required: true, message: "Please enter website_url" }]}
         >
           <Input />
         </Form.Item>
