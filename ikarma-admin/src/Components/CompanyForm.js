@@ -1,23 +1,111 @@
-import React from "react";
-import { Form, Input, Button, notification } from "antd";
+import React, { useState, useEffect } from "react";
+import { Form, Input, Button, Select, notification } from "antd";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import "react-toastify/dist/ReactToastify.css";
+import { stackBaseUrl } from "../constant";
 
 const CompanyForm = () => {
   const [form] = Form.useForm();
+  const token = useSelector((state) => state.token);
 
-  
+  // States to hold dropdown options
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  // States to hold the selected values
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  // Fetch countries when the component mounts
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get(
+          `${stackBaseUrl.Ikarmaphase1}/getcountries`, // API to fetch countries
+        );
+        console.log(" get countries ",response)
+        setCountries(response.data.data || []); // Update countries list
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+        notification.error({ message: "Error fetching countries" });
+      }
+    };
+
+    fetchCountries();
+  }, [token]);
+
+  // Fetch states when a country is selected
+  useEffect(() => {
+    if (selectedCountry) {
+      const fetchStates = async () => {
+        try {
+          const response = await axios.get(
+            `${stackBaseUrl.AdminGateway}/get/state?countryId=${selectedCountry}`, // API to fetch states
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setStates(response.data.data || []); // Update states list
+        } catch (error) {
+          console.error("Error fetching states:", error);
+          notification.error({ message: "Error fetching states" });
+        }
+      };
+
+      fetchStates();
+    }
+  }, [selectedCountry, token]);
+
+  // Fetch cities when a state is selected
+  useEffect(() => {
+    if (selectedState) {
+      const fetchCities = async () => {
+        try {
+          const response = await axios.get(
+            `${stackBaseUrl.AdminGateway}/get/city?stateId=${selectedState}`, // API to fetch cities
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setCities(response.data.data || []); // Update cities list
+        } catch (error) {
+          console.error("Error fetching cities:", error);
+          notification.error({ message: "Error fetching cities" });
+        }
+      };
+
+      fetchCities();
+    }
+  }, [selectedState, token]);
+
   // Form submission handler
   const onFinish = async (values) => {
     try {
-      // Call the API
+
+
+      const requestData = {
+        ...values,
+        country: Number(values.country),
+        state: Number(values.state),
+        city: Number(values.city),
+      }
+
+
+      console.log("on finished ",requestData)
+      
       const response = await axios.post(
-        "https://umbznza169.execute-api.us-east-2.amazonaws.com/nomination/addCompany",
-        values,
+        stackBaseUrl.AdminGateway+"/nomination/addCompany",
+        requestData,
         {
           headers: {
-            Authorization: `Bearer ${process.env.TOKEN}`, // Replace with your actual token
+            authorization: `Bearer ${token}`,
           },
         }
       );
@@ -34,7 +122,6 @@ const CompanyForm = () => {
     }
   };
 
-  // Error handling
   const onFinishFailed = (errorInfo) => {
     notification.error({
       message: "Submission Failed",
@@ -64,27 +151,75 @@ const CompanyForm = () => {
         </Form.Item>
 
         <Form.Item
-          label="City"
-          name="city"
-          rules={[{ required: true, message: "Please enter the city" }]}
+          label="Country"
+          name="country"
+          rules={[{ required: true, message: "Please select a country" }]}
         >
-          <Input />
+          <Select
+            showSearch // Enable search functionality
+            placeholder="Select Country"
+            onChange={(value) => setSelectedCountry(Number(value))}
+            value={selectedCountry}
+            filterOption={(input, option) =>
+              option?.children.toLowerCase().includes(input.toLowerCase())
+            }
+          >
+            {countries.map((country) => (
+              <Select.Option key={country.id} value={country.id}>
+                {country.name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item
           label="State"
           name="state"
-          rules={[{ required: true, message: "Please enter the state" }]}
+          rules={[{ required: true, message: "Please select a state" }]}
         >
-          <Input />
+          <Select
+           showSearch
+            placeholder="Select State"
+            onChange={(value) => setSelectedState(Number(value))}
+            value={selectedState}
+            disabled={!selectedCountry} // Disable if no country is selected
+            filterOption={(input, option) =>
+              option?.children.toLowerCase().includes(input.toLowerCase())
+            }
+          >
+            {states.map((state) => (
+              <Select.Option key={state.id} value={state.id}>
+                {state.name}
+              </Select.Option>
+            ))}
+          </Select>
+
+
+ 
+          
         </Form.Item>
 
         <Form.Item
-          label="Country"
-          name="country"
-          rules={[{ required: true, message: "Please enter the country" }]}
+          label="City"
+          name="city"
+          rules={[{ required: true, message: "Please select a city" }]}
         >
-          <Input />
+          <Select
+             showSearch
+            placeholder="Select City"
+            onChange={(value) => setSelectedCity(Number(value))}
+            value={selectedState ? undefined : undefined} // Disable if no state is selected
+            disabled={!selectedState}
+            filterOption={(input, option) =>
+              option?.children.toLowerCase().includes(input.toLowerCase())
+            }
+          >
+            {cities.map((city) => (
+              <Select.Option key={city.id} value={city.id}>
+                {city.name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item
@@ -122,31 +257,6 @@ const CompanyForm = () => {
           label="HR Last Name"
           name="hr_last_name"
           rules={[{ required: true, message: "Please enter HR's last name" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Nomination ID"
-          name="nomination_id"
-          rules={[
-            { required: true, message: "Please enter the nomination ID" },
-            { type: "text", message: "Nomination ID must be a number" },
-          ]}
-        >
-          <Input type="number" />
-        </Form.Item>
-
-        <Form.Item
-          label="Website URL"
-          name="website_url"
-          rules={[
-            { required: true, message: "Please enter the website URL" },
-            {
-              type: "url",
-              message: "Please enter a valid URL",
-            },
-          ]}
         >
           <Input />
         </Form.Item>

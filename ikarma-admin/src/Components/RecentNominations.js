@@ -46,10 +46,11 @@ const RecentNominations = () => {
           }
         );
         // Map the nominations data from response
+        console.log("Hr Nomination Result ",response)
         setNominations(response.data.data.nominationData || []);
       } catch (error) {
         console.error("Error fetching nominations:", error);
-        setNominations(nominationFallback.data.nominationData || []);
+        // setNominations(nominationFallback.data.nominationData || []);
       } finally {
         setLoading(false);
       }

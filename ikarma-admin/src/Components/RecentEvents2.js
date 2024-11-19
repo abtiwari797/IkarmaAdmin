@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import axios from "axios";
 import { fallbackData } from "../lib/fallbackData";
+import { useSelector } from "react-redux";
 
 const { Text } = Typography;
 
@@ -15,7 +16,9 @@ const RecentEvents2 = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const token = useSelector((state) => state.token);
 
+  console.log(" Recent2 Event Token ",token)
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -23,14 +26,17 @@ const RecentEvents2 = () => {
           "https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/eventlist",
           {
             headers: {
-              Authorization: `Bearer ${process.env.TOKEN}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
+
+        console.log(" response event list ",response.data.data)
+
         setEvents(response.data.data || []);
       } catch (error) {
         console.error("Error fetching events:", error);
-        setEvents(fallbackData.data);
+        // setEvents(fallbackData.data);
       } finally {
         setLoading(false);
       }

@@ -21,7 +21,7 @@ const Login = () => {
       const response = await login({ email: values.username, password: values.password });
       console.log(response);
       
-      const accessToken = response?.data?.token;
+      const accessToken = response?.data?.token.AccessToken;
 
       
       if (accessToken) {

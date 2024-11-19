@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { nominationFallback } from "../lib/nominationFallback";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const RecentEvents = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -13,21 +14,25 @@ const RecentEvents = () => {
   const [nominations, setNominations] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const token = useSelector((state) => state.token);
+
+  console.log(" Recent Event Token ",token)
+
   useEffect(() => {
     const fetchNominations = async () => {
       try {
         const response = await axios.get(
-          "https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/home/list/company_id?pageSize=1&pageNumber=1",
+          "https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/home/list/company_id?pageSize=20&pageNumber=1",
           {
             headers: {
-              Authorization: `Bearer ${process.env.TOKEN}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
         setNominations(response.data.data.eventData || []);
       } catch (error) {
         console.error("Error fetching nominations:", error);
-        setNominations(nominationFallback.data.eventData || []);
+        // setNominations(nominationFallback.data.eventData || []);
       } finally {
         setLoading(false);
       }
