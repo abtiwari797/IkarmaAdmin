@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Card, Avatar, Tag, Col, Spin } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { nominationFallback } from "../lib/nominationFallback";
 
 // Example of your response structure
@@ -33,6 +35,8 @@ const getStatusColor = (status) => {
 const RecentNominations = () => {
   const [nominations, setNominations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const token = useSelector((state) => state.token);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchNominations = async () => {
@@ -41,12 +45,10 @@ const RecentNominations = () => {
           "https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/home/list/company_id?pageSize=1&pageNumber=1",
           {
             headers: {
-              Authorization: `Bearer ${process.env.TOKEN}`,
+              Authorization: `Bearer ${token}`,
             },
           }
-        );
-        // Map the nominations data from response
-        console.log("Hr Nomination Result ",response)
+        );       
         setNominations(response.data.data.nominationData || []);
       } catch (error) {
         console.error("Error fetching nominations:", error);
@@ -63,16 +65,21 @@ const RecentNominations = () => {
     return <Spin size="large" />;
   }
 
+  const handleCardClick = (id) => {
+    navigate(`/nominationdetails/${id}`); // Navigate to the details page with the id
+  };
+
       // Filter nominations with status === 7
-      const filteredNominations = nominations.filter((nomination) => nomination.status >= 7);
+      const filteredNominations = nominations.filter((nomination) => nomination.status >= 0);
 
   return (
     <>
-      <p className="heading">Recent Nominations</p>
+      <p className="heading">Latest Nominations</p>
       <Col className="custom-content-area col">
         {filteredNominations.map((nomination, index) => (
           <Card
             key={nomination.id}
+            onClick={() => handleCardClick(nomination.id)}
             style={{
               minWidth: 350,
               borderRadius: "10px",

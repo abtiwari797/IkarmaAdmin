@@ -85,9 +85,9 @@ const Sidebar = () => {
         <Menu.Item key="1" icon={<DashboardOutlined />}>
           Dashboard
         </Menu.Item>
-        <Menu.Item key="2" icon={<GiftOutlined />}>
+        {/* <Menu.Item key="2" icon={<GiftOutlined />}>
           Nominations
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item key="3" icon={<CalendarOutlined />}>
           Events
         </Menu.Item>

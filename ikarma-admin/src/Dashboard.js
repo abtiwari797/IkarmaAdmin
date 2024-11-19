@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   Row,
   Col,
@@ -7,245 +7,137 @@ import {
   Button,
   Modal
 } from "antd";
+import axios from "axios";
 import Statistics from "./Components/Statistics";
 import RecentNominations from "./Components/RecentNominations";
 import RecentEvents from "./Components/RecentEvents";
 import RecentEvents2 from "./Components/RecentEvents2";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [action, setAction] = useState(null);
   const [selectedKey, setSelectedKey] = useState(null);
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const token = useSelector((state) => state.token);
   // Columns to include company and HR information
   const columns = [
     {
-      title: 'Company Name',
-      dataIndex: 'company_name',
-      key: 'company_name',
-      align: 'center',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      align: "center",
     },
     {
-      title: 'City',
-      dataIndex: 'city',
-      key: 'city',
-      align: 'center',
+      title: "Nominated By",
+      dataIndex: "nominatedby",
+      key: "nominatedby",
+      align: "center",
     },
     {
-      title: 'State',
-      dataIndex: 'state',
-      key: 'state',
-      align: 'center',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      align: "center",
+      render: (status) => (status === 3 ? "Approved" : "Pending"),
     },
     {
-      title: 'Country',
-      dataIndex: 'country',
-      key: 'country',
-      align: 'center',
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      align: "center",
     },
     {
-      title: 'Address Line 1',
-      dataIndex: 'address1',
-      key: 'address1',
-      align: 'center',
+      title: "Created Date",
+      dataIndex: "created_date",
+      key: "created_date",
+      align: "center",
+      render: (date) => new Date(date).toLocaleDateString(),
     },
     {
-      title: 'Address Line 2',
-      dataIndex: 'address2',
-      key: 'address2',
-      align: 'center',
+      title: "HR Approver",
+      dataIndex: "hr_approver",
+      key: "hr_approver",
+      align: "center",
     },
+    // {
+    //   title: "Access",
+    //   dataIndex: "access",
+    //   key: "access",
+    //   align: "center",
+    //   render: (access) => (access ? "Granted" : "Denied"),
+    // },
+    // {
+    //   title: "Image",
+    //   dataIndex: "imgurl",
+    //   key: "imgurl",
+    //   align: "center",
+    //   render: (url) => (
+    //     <img
+    //       src={url}
+    //       alt="Nomination"
+    //       style={{ width: "50px", height: "50px", objectFit: "cover" }}
+    //     />
+    //   ),
+    // },
     {
-      title: 'HR Email',
-      dataIndex: 'hr_email',
-      key: 'hr_email',
-      align: 'center',
+      title: "Actions",
+      key: "actions",
+      align: "center",
+      render: (text, record) => {
+        const hasAccess = record.access; // Assuming `access` is a boolean
+        const hasRequiredStatus = record.status >= 7;
+    
+        if (hasAccess && hasRequiredStatus) {
+          return (
+            <div>
+              <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => showConfirmModal("approve", record.id)}
+              >
+                Accept
+              </Button>
+              <Button danger onClick={() => showConfirmModal("reject", record.id)}>
+                Reject
+              </Button>
+            </div>
+          );
+        } else {
+          return <span style={{ color: "gray" }}>No Actions Available</span>;
+        }
+      },
     },
-    {
-      title: 'HR First Name',
-      dataIndex: 'hr_first_name',
-      key: 'hr_first_name',
-      align: 'center',
-    },
-    {
-      title: 'HR Last Name',
-      dataIndex: 'hr_last_name',
-      key: 'hr_last_name',
-      align: 'center',
-    },
-    {
-      title: 'Nomination ID',
-      dataIndex: 'nomination_id',
-      key: 'nomination_id',
-      align: 'center',
-    },
-    {
-      title: 'Website URL',
-      dataIndex: 'website_url',
-      key: 'website_url',
-      align: 'center',
-      render: (text) => <a href={text} target="_blank" rel="noopener noreferrer">{text}</a>,
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      align: 'center',
-      render: (text, record) => (
-        <div>
-         <Button type="primary" style={{ marginRight: 8 }} onClick={() => showConfirmModal("approve", record.key)}>
-            Accept
-          </Button>
-          <Button danger onClick={() => showConfirmModal("reject", record.key)}>
-            Reject
-          </Button>
-        </div>
-      ),
-    },
+    
   ];
-  const leaderboardData = [
-    {
-      key: '1',
-      company_name: 'newCompany200',
-      city: 'testCity',
-      state: 'testState',
-      country: 'test country',
-      address1: '542',
-      address2: 'aligajfdjs',
-      hr_email: 'newCompanyHR200@gmail.com',
-      hr_first_name: 'HR200',
-      hr_last_name: 'Last Name',
-      nomination_id: 42,
-      website_url: 'https://www.qanvustech.com',
-    },
-    {
-      key: '2',
-      company_name: 'newCompany201',
-      city: 'cityOne',
-      state: 'stateOne',
-      country: 'countryOne',
-      address1: '1234',
-      address2: 'streetName',
-      hr_email: 'newCompanyHR201@gmail.com',
-      hr_first_name: 'HR201',
-      hr_last_name: 'LastName1',
-      nomination_id: 43,
-      website_url: 'https://www.example1.com',
-    },
-    {
-      key: '3',
-      company_name: 'newCompany202',
-      city: 'cityTwo',
-      state: 'stateTwo',
-      country: 'countryTwo',
-      address1: '5678',
-      address2: 'laneStreet',
-      hr_email: 'newCompanyHR202@gmail.com',
-      hr_first_name: 'HR202',
-      hr_last_name: 'LastName2',
-      nomination_id: 44,
-      website_url: 'https://www.example2.com',
-    },
-    {
-      key: '4',
-      company_name: 'newCompany203',
-      city: 'cityThree',
-      state: 'stateThree',
-      country: 'countryThree',
-      address1: '91011',
-      address2: 'parkAve',
-      hr_email: 'newCompanyHR203@gmail.com',
-      hr_first_name: 'HR203',
-      hr_last_name: 'LastName3',
-      nomination_id: 45,
-      website_url: 'https://www.example3.com',
-    },
-    {
-      key: '5',
-      company_name: 'newCompany204',
-      city: 'cityFour',
-      state: 'stateFour',
-      country: 'countryFour',
-      address1: '1213',
-      address2: 'mainSt',
-      hr_email: 'newCompanyHR204@gmail.com',
-      hr_first_name: 'HR204',
-      hr_last_name: 'LastName4',
-      nomination_id: 46,
-      website_url: 'https://www.example4.com',
-    },
-    {
-      key: '6',
-      company_name: 'newCompany205',
-      city: 'cityFive',
-      state: 'stateFive',
-      country: 'countryFive',
-      address1: '1415',
-      address2: 'sunsetBlvd',
-      hr_email: 'newCompanyHR205@gmail.com',
-      hr_first_name: 'HR205',
-      hr_last_name: 'LastName5',
-      nomination_id: 47,
-      website_url: 'https://www.example5.com',
-    },
-    {
-      key: '7',
-      company_name: 'newCompany206',
-      city: 'citySix',
-      state: 'stateSix',
-      country: 'countrySix',
-      address1: '1617',
-      address2: 'riverSt',
-      hr_email: 'newCompanyHR206@gmail.com',
-      hr_first_name: 'HR206',
-      hr_last_name: 'LastName6',
-      nomination_id: 48,
-      website_url: 'https://www.example6.com',
-    },
-    {
-      key: '8',
-      company_name: 'newCompany207',
-      city: 'citySeven',
-      state: 'stateSeven',
-      country: 'countrySeven',
-      address1: '1819',
-      address2: 'oakSt',
-      hr_email: 'newCompanyHR207@gmail.com',
-      hr_first_name: 'HR207',
-      hr_last_name: 'LastName7',
-      nomination_id: 49,
-      website_url: 'https://www.example7.com',
-    },
-    {
-      key: '9',
-      company_name: 'newCompany208',
-      city: 'cityEight',
-      state: 'stateEight',
-      country: 'countryEight',
-      address1: '2021',
-      address2: 'elmSt',
-      hr_email: 'newCompanyHR208@gmail.com',
-      hr_first_name: 'HR208',
-      hr_last_name: 'LastName8',
-      nomination_id: 50,
-      website_url: 'https://www.example8.com',
-    },
-    {
-      key: '10',
-      company_name: 'newCompany209',
-      city: 'cityNine',
-      state: 'stateNine',
-      country: 'countryNine',
-      address1: '2223',
-      address2: 'pineSt',
-      hr_email: 'newCompanyHR209@gmail.com',
-      hr_first_name: 'HR209',
-      hr_last_name: 'LastName9',
-      nomination_id: 51,
-      website_url: 'https://www.example9.com',
+
+  const fetchNominations = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        "https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/home/list/company_id?pageSize=20&pageNumber=1",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setLeaderboardData(response.data.data.nominationData || []);
+      console.log(response.data.data.nominationData);
+    } catch (error) {
+      console.error("Error fetching nominations:", error);
+      toast.error("Failed to fetch leaderboard data.");
+    } finally {
+      setLoading(false);
     }
-  ];
-  
+  };
+
+  useEffect(() => {
+    fetchNominations();
+  }, []);
 
   const showConfirmModal = (actionType, key) => {
     setAction(actionType);
@@ -253,16 +145,34 @@ const Dashboard = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    if (action === "approve") {
-      toast.success("Entry approved successfully!");
-      console.log("Approved entry with key:", selectedKey);
-    } else if (action === "reject") {
-      toast.error("Entry rejected!");
-      console.log("Rejected entry with key:", selectedKey);
+  const handleOk = async () => {
+    try {
+      const type = action === "approve" ? 1 : 2; 
+      const url = `https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/nomination/approve`;
+      const nominationId = selectedKey; 
+
+      const fullUrl = `${url}?nominationId=${nominationId}&type=${type}`;
+
+      const response = await axios.get(fullUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      });
+        
+      if (response.data.resCode === 1) {
+        toast.success(`Entry ${type === 1 ? "approved" : "rejected"} successfully!`);
+        fetchNominations();
+      } else {
+        throw new Error("Unexpected response status");
+      }
+    } catch (error) {
+      console.error(`Failed to ${action} entry:`, error);
+      toast.error(`Failed to ${action} entry. Please try again.`);
+    } finally {
+      setIsModalVisible(false);
     }
-    setIsModalVisible(false);
   };
+  
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -282,7 +192,7 @@ const Dashboard = () => {
             </Row>
             <Row gutter={16} style={{ marginTop: "20px" }}>
               <Col span={24}>
-                <Card title="Company Information">
+                <Card title="Nominations">
                   {/* Table wrapper with custom overflow styles */}
                   <div className="table-wrapper">
                     <Table

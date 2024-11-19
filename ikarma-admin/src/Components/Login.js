@@ -17,7 +17,6 @@ const Login = () => {
   const onFinish = async (values) => {   
     try {
       
-      navigate("/dashboard");
       const response = await login({ email: values.username, password: values.password });
       console.log(response);
       

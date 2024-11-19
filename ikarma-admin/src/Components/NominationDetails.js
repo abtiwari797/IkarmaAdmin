@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"; 
 import {
   Layout,
   Typography,
@@ -11,14 +12,53 @@ import {
   Col,
   Badge,
   Tabs,
+  Spin
 } from "antd";
 import { CheckCircleOutlined, EditOutlined } from "@ant-design/icons";
-
+import { useSelector } from "react-redux";
+import axios from "axios";
 const { Header, Sider, Content } = Layout;
 const { Text, Title } = Typography;
 const { TabPane } = Tabs;
 
 const NominationDetails = () => {
+  const { id } = useParams();
+  const token = useSelector((state) => state.token);
+  const [loading, setLoading] = useState(true);
+  const [details, setDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        const response = await axios.get(
+          `https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/nomination/detail?id=${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setDetails(response.data.data.nominationData);
+      } catch (error) {
+        console.error("Error fetching nomination details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDetails();
+  }, [id, token]);
+
+
+  if (loading) {
+    return <Spin size="large" />;
+  }
+
+  if (!details) {
+    return <Text>No details available for this nomination.</Text>;
+  }
+
+
   return (
     <Layout style={{ minHeight: "100vh", background: "white" }}>
       <Content>
@@ -26,7 +66,7 @@ const NominationDetails = () => {
           {/* Event Details */}
           <Col xs={24} md={8}>
             <Card
-              cover={<img alt="example" src="/images.jpg" />}
+              cover={<img alt="example" src={details.eventMedia[0].imgurl} />}
               style={{ borderRadius: "8px" }}
             >
               <Title level={4}>Planting Trees With Your Folks</Title>
