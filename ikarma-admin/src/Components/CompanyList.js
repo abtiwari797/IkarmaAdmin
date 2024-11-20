@@ -70,7 +70,7 @@ const RecentEvents = () => {
   const filteredNominations = nominations;
 
   const handleCardClick = (nomination) => {
-    navigate("/addcompany", { state: { company: nomination } });
+    navigate("/editcompany", { state: { company: nomination } });
   };
 
   const addHrView = (nomination) => {
@@ -82,67 +82,88 @@ const RecentEvents = () => {
       <p className="heading">Company list</p>
       <Col className="custom-content-area col">
         {filteredNominations.map((nomination) => (
-          <Card
-            key={nomination.id}
-            // onClick={() => handleCardClick(nomination)}
-            style={{
-              minWidth: 250,
-              borderRadius: "10px",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              overflow: "hidden",
-              padding: "16px",
-            }}
-            cover={
-              <img
-                alt="Nomination"
-                src={nomination.logo_url}
-                style={{
-                  height: "150px",
-                  objectFit: "cover",
-                  borderRadius: "10px",
-                }}
-              />
-            }
-            bodyStyle={{ padding: "16px" }}
-          >
-            <h3 style={{ marginBottom: "8px", fontSize: "16px" }}>
-              {nomination.company_name}
-            </h3>
-            <p style={{ color: "#555", marginBottom: "8px" }}>
-              {nomination.alias}
-            </p>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                fontSize: "14px",
-                color: "#999",
-              }}
-            >
-              Sector: {nomination.industry}
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-around",
-                marginTop: "16px",
-              }}
-            >
-              <Button
-                type="text"
-                style={{
-                  border: "1px solid #52c41a",
-                  color: "#52c41a",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent card click navigation
-                  addHrView(nomination);
-                }}
-              >
-                Add HR
-              </Button>
-            </div>
-          </Card>
+           <Card
+           key={nomination.id}
+           style={{
+             borderRadius: "10px",
+             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+             overflow: "hidden",
+             display: "flex",
+             flexDirection: "column",
+             minWidth: "300px",
+           }}
+           cover={
+             <img
+               alt="Nomination"
+               src={nomination.logo_url}
+               style={{
+                 height: "150px",
+                 objectFit: "cover",
+                 borderRadius: "10px 10px 0 0", // Rounded corners only on the top
+               }}
+             />
+           }
+           bodyStyle={{
+             padding: "16px",
+             display: "flex",
+             flexDirection: "column",
+             flex: "1",
+           }}
+           onClick={() => handleCardClick(nomination)}
+         >
+           <h3
+             style={{
+               marginBottom: "8px",
+               fontSize: "18px",
+               fontWeight: "bold",
+               textAlign: "center",
+             }}
+           >
+             {nomination.company_name}
+           </h3>
+           <p
+             style={{
+               color: "#555",
+               marginBottom: "8px",
+               textAlign: "center",
+               fontSize: "14px",
+             }}
+           >
+             {nomination.alias}
+           </p>
+           <div
+             style={{
+               fontSize: "14px",
+               color: "#999",
+               textAlign: "center",
+               marginBottom: "16px",
+             }}
+           >
+             Sector: {nomination.industry}
+           </div>
+           <div
+             style={{
+               display: "flex",
+               justifyContent: "center",
+               marginTop: "auto",
+             }}
+           >
+             <Button
+               type="text"
+               style={{
+                 border: "1px solid #52c41a",
+                 color: "#52c41a",
+                 borderRadius: "5px",
+               }}
+               onClick={(e) => {
+                 e.stopPropagation(); // Prevent card click navigation
+                 addHrView(nomination);
+               }}
+             >
+               Add HR
+             </Button>
+           </div>
+         </Card>
         ))}
       </Col>
 
