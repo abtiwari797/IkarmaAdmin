@@ -15,6 +15,7 @@ import RecentEvents2 from "./Components/RecentEvents2";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -23,6 +24,7 @@ const Dashboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loading, setLoading] = useState(true);
   const token = useSelector((state) => state.token);
+  const navigate = useNavigate();
   // Columns to include company and HR information
   const columns = [
     {
@@ -200,6 +202,9 @@ const Dashboard = () => {
                       dataSource={leaderboardData}
                       pagination={false}
                       scroll={{ x: 'max-content' }} // Enable horizontal scrolling
+                      onRow={(record) => ({
+                        onClick: () => navigate(`/nominationdetails/${record.id}`), // Navigate on row click
+                      })}
                     />
                   </div>
                 </Card>
