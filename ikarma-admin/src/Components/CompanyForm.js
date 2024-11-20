@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Select, notification } from "antd";
+import { Form, Input, Button, Select, Radio, notification } from "antd";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -22,6 +22,8 @@ const CompanyForm = () => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedState, setSelectedState] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
+
+  const [ikarmaPartner, setIkarmapartner] = useState(null); // State for the ikarma_partner radio
 
   // Fetch countries when the component mounts
   useEffect(() => {
@@ -100,12 +102,14 @@ const CompanyForm = () => {
         address1: company.address1,
         address2: company.address2,
         website_url: company.website_url,
+        ikarma_partner: company.ikarma_partner, // Populate ikarma_partner if available in company data
       });
 
       // Set selected country, state, and city based on company data
       setSelectedCountry(company.countryid);
       setSelectedState(company.stateid);
       setSelectedCity(company.cityid);
+      setIkarmapartner(company.ikarma_partner); // Set the ikarma_partner value
     }
   }, [company, form]);
 
@@ -274,6 +278,20 @@ const CompanyForm = () => {
           rules={[{ required: true, message: "Please enter website URL" }]}
         >
           <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="ikarma Partner"
+          name="ikarma_partner"
+          rules={[{ required: true, message: "Please select if you are an ikarma partner" }]}
+        >
+          <Radio.Group
+            value={ikarmaPartner}
+            onChange={(e) => setIkarmapartner(e.target.value)}
+          >
+            <Radio value={true}>Yes</Radio>
+            <Radio value={false}>No</Radio>
+          </Radio.Group>
         </Form.Item>
 
         <Form.Item>
