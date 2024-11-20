@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import Statistics from "./Components/Statistics";
 import RecentNominations from "./Components/RecentNominations";
-import RecentEvents from "./Components/RecentEvents";
+import RecentEvents from "./Components/CompanyList";
 import RecentEvents2 from "./Components/RecentEvents2";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';

@@ -5,6 +5,7 @@ import MainLayout from "./Components/MainLayout";  // Import the MainLayout
 import CompnayForm from "./Components/CompanyForm";
 import Login from "./Components/Login";
 import Protected from "./routes/Protected";
+import AddHrToCompany from "./Components/AddHrToCompany";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/dashboard" element={<MainLayout><Home /></MainLayout>}/>
         <Route path="/nominationdetails/:id" element={<MainLayout><NominationDetails /></MainLayout>} />
         <Route path="/addcompany" element={<MainLayout><CompnayForm/></MainLayout>} />
+        <Route path="/addhr" element={<MainLayout><AddHrToCompany/></MainLayout>} />
       </Routes>
     </Router>
   );

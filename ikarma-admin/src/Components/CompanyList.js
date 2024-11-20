@@ -6,8 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { nominationFallback } from "../lib/nominationFallback";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { stackBaseUrl } from "../constant/index";
+import { useNavigate } from "react-router-dom";
 
 const RecentEvents = () => {
+  const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNomination, setSelectedNomination] = useState(null);
   const [actionType, setActionType] = useState("");
@@ -20,17 +23,16 @@ const RecentEvents = () => {
     const fetchNominations = async () => {
       try {
         const response = await axios.get(
-          "https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/home/list/company_id?pageSize=20&pageNumber=1",
+          stackBaseUrl.AdminGateway + "/get/getAllCompanies",
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setNominations(response.data.data.eventData || []);
+        setNominations(response.data.data || []);
       } catch (error) {
         console.error("Error fetching nominations:", error);
-        // setNominations(nominationFallback.data.eventData || []);
       } finally {
         setLoading(false);
       }
@@ -64,17 +66,25 @@ const RecentEvents = () => {
     return <Spin size="large" />;
   }
 
-    // Filter nominations with status === 7
-    const filteredNominations = nominations.filter((nomination) => nomination.status >= 0);
+  // Filter nominations with status >= 0 (or use all if there's no filtering logic)
+  const filteredNominations = nominations;
 
+  const handleCardClick = (nomination) => {
+    navigate("/addcompany", { state: { company: nomination } });
+  };
+
+  const addHrView = (nomination) => {
+    navigate("/addhr", { state: { company: nomination } });
+  };
 
   return (
     <>
-      <p className="heading">Recent Events Requests</p>
+      <p className="heading">Company list</p>
       <Col className="custom-content-area col">
         {filteredNominations.map((nomination) => (
           <Card
             key={nomination.id}
+            // onClick={() => handleCardClick(nomination)}
             style={{
               minWidth: 250,
               borderRadius: "10px",
@@ -85,7 +95,7 @@ const RecentEvents = () => {
             cover={
               <img
                 alt="Nomination"
-                src={nomination.imgurl}
+                src={nomination.logo_url}
                 style={{
                   height: "150px",
                   objectFit: "cover",
@@ -96,10 +106,10 @@ const RecentEvents = () => {
             bodyStyle={{ padding: "16px" }}
           >
             <h3 style={{ marginBottom: "8px", fontSize: "16px" }}>
-              {nomination.name}
+              {nomination.company_name}
             </h3>
             <p style={{ color: "#555", marginBottom: "8px" }}>
-              Nominated by {nomination.nominatedby}
+              {nomination.alias}
             </p>
             <div
               style={{
@@ -109,9 +119,7 @@ const RecentEvents = () => {
                 color: "#999",
               }}
             >
-              <CalendarOutlined style={{ marginRight: "4px" }} />
-              {new Date(nomination.created_date).toLocaleDateString()}
-
+              Sector: {nomination.industry}
             </div>
             <div
               style={{
@@ -122,26 +130,16 @@ const RecentEvents = () => {
             >
               <Button
                 type="text"
-                danger
-                disabled={!nomination.access}
                 style={{
-                  border:"1px solid #ff4d4f",
-                  color: "#ff4d4f"
+                  border: "1px solid #52c41a",
+                  color: "#52c41a",
                 }}
-                onClick={() => showConfirmModal(nomination, "decline")}
-              >
-                Decline
-              </Button>
-              <Button
-                type="text"
-                disabled={!nomination.access}
-                style={{
-                  border:"1px solid #52c41a",
-                  color:"#52c41a"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click navigation
+                  addHrView(nomination);
                 }}
-                onClick={() => showConfirmModal(nomination, "accept")}
               >
-                Accept
+                Add HR
               </Button>
             </div>
           </Card>

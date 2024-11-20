@@ -5,29 +5,33 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import { stackBaseUrl } from "../constant";
+import { useLocation } from "react-router-dom";
 
 const CompanyForm = () => {
+  const location = useLocation();
+  const { company } = location.state || {};  // Destructure the company data from the state
+  console.log("company info", company);
+
   const [form] = Form.useForm();
   const token = useSelector((state) => state.token);
 
-  // States to hold dropdown options
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
-  // States to hold the selected values
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedState, setSelectedState] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
+
   // Fetch countries when the component mounts
   useEffect(() => {
     const fetchCountries = async () => {
       try {
         const response = await axios.get(
-          `${stackBaseUrl.Ikarmaphase1}/getcountries`, // API to fetch countries
+          `${stackBaseUrl.Ikarmaphase1}/getcountries`
         );
-        console.log(" get countries ",response)
-        setCountries(response.data.data || []); // Update countries list
+        console.log("Countries data:", response.data.data);
+        setCountries(response.data.data || []);
       } catch (error) {
         console.error("Error fetching countries:", error);
         notification.error({ message: "Error fetching countries" });
@@ -43,14 +47,15 @@ const CompanyForm = () => {
       const fetchStates = async () => {
         try {
           const response = await axios.get(
-            `${stackBaseUrl.AdminGateway}/get/state?countryId=${selectedCountry}`, // API to fetch states
+            `${stackBaseUrl.AdminGateway}/get/state?countryId=${selectedCountry}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }
           );
-          setStates(response.data.data || []); // Update states list
+          console.log("States data:", response.data.data);
+          setStates(response.data.data || []);
         } catch (error) {
           console.error("Error fetching states:", error);
           notification.error({ message: "Error fetching states" });
@@ -67,14 +72,15 @@ const CompanyForm = () => {
       const fetchCities = async () => {
         try {
           const response = await axios.get(
-            `${stackBaseUrl.AdminGateway}/get/city?stateId=${selectedState}`, // API to fetch cities
+            `${stackBaseUrl.AdminGateway}/get/city?stateId=${selectedState}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }
           );
-          setCities(response.data.data || []); // Update cities list
+          console.log("Cities data:", response.data.data);
+          setCities(response.data.data || []);
         } catch (error) {
           console.error("Error fetching cities:", error);
           notification.error({ message: "Error fetching cities" });
@@ -85,32 +91,43 @@ const CompanyForm = () => {
     }
   }, [selectedState, token]);
 
+  // Prepopulate the form with company data when available
+  useEffect(() => {
+    if (company) {
+      // Set form fields with existing company data
+      form.setFieldsValue({
+        company_name: company.company_name,
+        address1: company.address1,
+        address2: company.address2,
+        website_url: company.website_url,
+      });
+
+      // Set selected country, state, and city based on company data
+      setSelectedCountry(company.countryid);
+      setSelectedState(company.stateid);
+      setSelectedCity(company.cityid);
+    }
+  }, [company, form]);
 
   function isValidURL(url) {
     return /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(url);
   }
-  // Form submission handler
+
   const onFinish = async (values) => {
     try {
-
-
       const requestData = {
         ...values,
         country: Number(values.country),
         state: Number(values.state),
         city: Number(values.city),
+      };
+
+      if (!isValidURL(requestData.website_url)) {
+        throw new Error('Invalid website URL');
       }
 
-      if(!isValidURL(requestData.website_url))
-      {
-       throw new Error('invalid website URL')
-      }
-
-
-      console.log("on finished ",requestData)
-      
       const response = await axios.post(
-        stackBaseUrl.AdminGateway+"/nomination/addCompany",
+        `${stackBaseUrl.AdminGateway}/nomination/addCompany`,
         requestData,
         {
           headers: {
@@ -121,7 +138,7 @@ const CompanyForm = () => {
 
       if (response.status === 200) {
         toast.success("Company information submitted successfully!");
-        form.resetFields(); // Clear the form
+        form.resetFields();
       } else {
         toast.error("Failed to submit the company information.");
       }
@@ -130,8 +147,6 @@ const CompanyForm = () => {
       toast.error(`An error occurred while submitting the form. ${error}`);
     }
   };
-
- 
 
   const onFinishFailed = (errorInfo) => {
     notification.error({
@@ -167,7 +182,7 @@ const CompanyForm = () => {
           rules={[{ required: true, message: "Please select a country" }]}
         >
           <Select
-            showSearch // Enable search functionality
+            showSearch
             placeholder="Select Country"
             onChange={(value) => setSelectedCountry(Number(value))}
             value={selectedCountry}
@@ -175,11 +190,15 @@ const CompanyForm = () => {
               option?.children.toLowerCase().includes(input.toLowerCase())
             }
           >
-            {countries.map((country) => (
-              <Select.Option key={country.id} value={country.id}>
-                {country.name}
-              </Select.Option>
-            ))}
+            {countries.length > 0 ? (
+              countries.map((country) => (
+                <Select.Option key={country.id} value={country.id}>
+                  {country.name}
+                </Select.Option>
+              ))
+            ) : (
+              <Select.Option disabled>No countries available</Select.Option>
+            )}
           </Select>
         </Form.Item>
 
@@ -189,25 +208,25 @@ const CompanyForm = () => {
           rules={[{ required: true, message: "Please select a state" }]}
         >
           <Select
-           showSearch
+            showSearch
             placeholder="Select State"
             onChange={(value) => setSelectedState(Number(value))}
             value={selectedState}
-            disabled={!selectedCountry} // Disable if no country is selected
+            disabled={!selectedCountry}
             filterOption={(input, option) =>
               option?.children.toLowerCase().includes(input.toLowerCase())
             }
           >
-            {states.map((state) => (
-              <Select.Option key={state.id} value={state.id}>
-                {state.name}
-              </Select.Option>
-            ))}
+            {states.length > 0 ? (
+              states.map((state) => (
+                <Select.Option key={state.id} value={state.id}>
+                  {state.name}
+                </Select.Option>
+              ))
+            ) : (
+              <Select.Option disabled>No states available</Select.Option>
+            )}
           </Select>
-
-
- 
-          
         </Form.Item>
 
         <Form.Item
@@ -216,20 +235,24 @@ const CompanyForm = () => {
           rules={[{ required: true, message: "Please select a city" }]}
         >
           <Select
-             showSearch
+            showSearch
             placeholder="Select City"
             onChange={(value) => setSelectedCity(Number(value))}
-            value={selectedState ? undefined : undefined} // Disable if no state is selected
+            value={selectedCity}
             disabled={!selectedState}
             filterOption={(input, option) =>
               option?.children.toLowerCase().includes(input.toLowerCase())
             }
           >
-            {cities.map((city) => (
-              <Select.Option key={city.id} value={city.id}>
-                {city.name}
-              </Select.Option>
-            ))}
+            {cities.length > 0 ? (
+              cities.map((city) => (
+                <Select.Option key={city.id} value={city.id}>
+                  {city.name}
+                </Select.Option>
+              ))
+            ) : (
+              <Select.Option disabled>No cities available</Select.Option>
+            )}
           </Select>
         </Form.Item>
 
@@ -241,44 +264,14 @@ const CompanyForm = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item 
-        label="Address 2" 
-        name="address2" 
-        rules={[{ required: true, message: "Please enter address line 2" }]}>
+        <Form.Item label="Address 2" name="address2">
           <Input />
         </Form.Item>
 
         <Form.Item
-          label="HR Email"
-          name="hr_email"
-          rules={[
-            { required: true, message: "Please enter the HR email" },
-            { type: "email", message: "Please enter a valid email" },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="HR First Name"
-          name="hr_first_name"
-          rules={[{ required: true, message: "Please enter HR's first name" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="HR Last Name"
-          name="hr_last_name"
-          rules={[{ required: true, message: "Please enter HR's last name" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Website url"
+          label="Website URL"
           name="website_url"
-          rules={[{ required: true, message: "Please enter website_url" }]}
+          rules={[{ required: true, message: "Please enter website URL" }]}
         >
           <Input />
         </Form.Item>

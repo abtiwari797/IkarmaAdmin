@@ -20,6 +20,7 @@ const RecentEvents2 = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
+      console.log(" access token ",token)
       try {
         const response = await axios.get(
           "https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/eventlist",
