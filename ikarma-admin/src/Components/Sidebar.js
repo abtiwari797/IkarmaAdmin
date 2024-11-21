@@ -28,7 +28,7 @@ const Sidebar = () => {
         return "4";  // Leaderboard
       case "/":
         return "5";  // Wallet
-      case "/addcompany":
+      case "/companylist":
         return "6";  // Add Company
       default:
         return "1"; // Default to Dashboard if path doesn't match
@@ -74,7 +74,7 @@ const Sidebar = () => {
               path = "/";
               break;
             case "6":
-              path = "/addcompany";
+              path = "/companylist";
               break;
             default:
               path = "/";
@@ -98,7 +98,7 @@ const Sidebar = () => {
           Wallet
         </Menu.Item>
         <Menu.Item key="6" icon={<BuildOutlined />}>
-          Add Company
+        Company List
         </Menu.Item>
       </Menu>
     </Sider>
