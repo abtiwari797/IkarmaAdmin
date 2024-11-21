@@ -7,6 +7,7 @@ import Login from "./Components/Login";
 import Protected from "./routes/Protected";
 import AddHrToCompany from "./Components/AddHrToCompany";
 import EditCompany from "./Components/EditCompany";
+import CompnayList from "./Components/CompanyLists";
 
 const App = () => {
   return (
@@ -15,8 +16,9 @@ const App = () => {
         <Route path="/" element={<Login/>} />
         <Route path="/dashboard" element={<MainLayout><Home /></MainLayout>}/>
         <Route path="/nominationdetails/:id" element={<MainLayout><NominationDetails /></MainLayout>} />
-        <Route path="/addcompany" element={<MainLayout><CompnayForm/></MainLayout>} />
+        <Route path="/companylist" element={<MainLayout><CompnayList/></MainLayout>} />
         <Route path="/editcompany" element={<MainLayout><EditCompany/></MainLayout>} />
+        <Route path="/addcompany" element={<MainLayout><CompnayForm/></MainLayout>} />
         <Route path="/addhr" element={<MainLayout><AddHrToCompany/></MainLayout>} />
       </Routes>
     </Router>
