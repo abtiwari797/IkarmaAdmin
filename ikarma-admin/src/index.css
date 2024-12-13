@@ -13,11 +13,11 @@
   color: white !important; /* White text for selected item */
 }
 
-.logo{
-display: flex;
-align-items: center;
+.logo {
+  display: flex;
+  align-items: center;
 }
-.Klogo{
+.Klogo {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -30,18 +30,17 @@ align-items: center;
   margin-right: 10px;
 }
 
-.heading{
+.heading {
   color: black;
   font-size: 16px;
   margin-left: 10px;
   font-weight: 500;
 }
 
-.navbar{
-  
+.navbar {
 }
 
-.search-input{
+.search-input {
   background: rgb(222, 221, 221);
   border-radius: 25px;
   height: 6vh;
@@ -49,42 +48,40 @@ align-items: center;
 
 /* For Webkit-based browsers like Chrome, Safari */
 .custom-content-area::-webkit-scrollbar {
-  display: none;  /* Hides the scrollbar */
+  display: none; /* Hides the scrollbar */
 }
 
 /* For Firefox */
 .custom-content-area {
-  scrollbar-width: none;  /* Hides the scrollbar */
+  scrollbar-width: none; /* Hides the scrollbar */
 }
 
-.details{
+.details {
   width: 100%;
   min-height: 100vh;
   display: flex;
   overflow: hidden;
 }
 
-.details1{
+.details1 {
   width: 70%;
   overflow: hidden;
 }
 
-.rows{
+.rows {
   display: flex;
   flex-direction: column;
   width: 100%;
-  
 }
 
-.custom-content-area.col{
+.custom-content-area.col {
   display: flex;
   gap: 16px;
   overflow-x: scroll;
   width: 100%;
-  
 }
 
-.custom-content-area.events{
+.custom-content-area.events {
   width: 30%;
   height: 100vh;
   overflow-y: scroll;
@@ -99,16 +96,16 @@ align-items: center;
 
 /* Custom styles for alternating row colors */
 .table-row-light {
-  background-color: #F7F6F3;
+  background-color: #f7f6f3;
 }
 
 .table-row-dark {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 /* Remove the default border and customize table header */
 .ant-table-thead > tr > th {
-  background: #FAF9F7;
+  background: #faf9f7;
   font-weight: 600;
   text-align: center;
 }
@@ -122,19 +119,19 @@ align-items: center;
 
 /* Link styling for 'See all' */
 .ant-card-extra a {
-  color: #FF7A45;
+  color: #ff7a45;
   font-weight: 500;
 }
 
 /* Button styling */
 .ant-btn-primary {
-  background-color: #FF7A45;
-  border-color: #FF7A45;
+  background-color: #ff7a45;
+  border-color: #ff7a45;
 }
 
 .ant-btn-danger {
-  background-color: #FF4D4F;
-  border-color: #FF4D4F;
+  background-color: #ff4d4f;
+  border-color: #ff4d4f;
 }
 
 .table-wrapper {
@@ -146,7 +143,6 @@ align-items: center;
   display: none; /* Hide the horizontal scrollbar */
 }
 
-
 /* Hide scrollbars for all elements */
 ::-webkit-scrollbar {
   display: none; /* For Chrome, Safari, and Edge */
@@ -155,4 +151,29 @@ align-items: center;
 * {
   scrollbar-width: none; /* For Firefox */
   -ms-overflow-style: none; /* For Internet Explorer 10+ */
+}
+
+.avtar {
+  border: 1px solid black;
+  padding: 3px;
+  margin-left: 10px;
+}
+
+.spinner {
+  position: fixed;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  top: 0px;
+  z-index: 1000;
+  left: 0px;
+}
+
+.spin {
+  width: 50px;
+  height: 50px;
 }

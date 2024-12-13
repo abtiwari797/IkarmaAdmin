@@ -1,5 +1,16 @@
-import React from "react";
-import { Layout, Input, Menu, Avatar, Typography, Space, Row, Col } from "antd";
+import React, { useState } from "react";
+import {
+  Layout,
+  Input,
+  Menu,
+  Avatar,
+  Typography,
+  Space,
+  Row,
+  Col,
+  Button,
+} from "antd";
+import Spinner from "./Spinner";
 import {
   SearchOutlined,
   DashboardOutlined,
@@ -15,27 +26,36 @@ import { setToken } from "../ReduxStore/action";
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
 
+
 const Navbar = () => {
   const dispatch = useDispatch();
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const handleIKarmaClick = async () => {
     try {
+      setShowSpinner(true);
       const response = await login({
-        email: "Hk",
-        password: "Hk",
+        email: "rohit@gooddolphin.com",
+        password: "Welcome1@",
       });
       const accessToken = response?.data?.token.AccessToken;
       if (accessToken) {
-        dispatch(setToken(accessToken));
+        // dispatch(setToken(accessToken));
+        window.reload();
+        localStorage.setItem("token", accessToken);
       } else {
         throw new Error("Token not received");
       }
     } catch (error) {
       console.error("Login error:", error);
+    } finally {
+      setShowSpinner(false);
     }
   };
 
   return (
+    <>
+    {showSpinner && <Spinner />}
     <Header
       style={{
         backgroundColor: "#ffffff",
@@ -57,7 +77,9 @@ const Navbar = () => {
             backgroundColor: "#ff8c00",
             color: "#fff",
             fontSize: "16px",
+            cursor: "pointer",
           }}
+          onClick={handleIKarmaClick}
         >
           K
         </Avatar>
@@ -66,6 +88,7 @@ const Navbar = () => {
             fontSize: "18px",
             fontWeight: "bold",
             marginLeft: "10px",
+            cursor: "pointer",
           }}
           onClick={handleIKarmaClick}
         >
@@ -79,6 +102,18 @@ const Navbar = () => {
         >
           Dashboard
         </Text>
+        <Button
+          type="primary"
+          style={{
+            marginLeft: "20px",
+            backgroundColor: "#FF8C42",
+            border: "none",
+            cursor: "pointer",
+          }}
+          onClick={handleIKarmaClick}
+        >
+          Refresh
+        </Button>
       </Row>
 
       {/* Middle - Search Input */}
@@ -97,12 +132,13 @@ const Navbar = () => {
         <MessageOutlined style={{ fontSize: "20px", color: "#000" }} />
         <Row align="middle">
           <Col style={{ marginLeft: "8px" }}>
-            <Text style={{ fontWeight: "bold" }}>Anita William's</Text>
+            <Text style={{ fontWeight: "bold" }}>Rohit</Text>
           </Col>
-          <Avatar src="https://randomuser.me/api/portraits/women/1.jpg" />
+          <Avatar src="/user.webp" className="avtar" />
         </Row>
       </Space>
     </Header>
+    </>
   );
 };
 

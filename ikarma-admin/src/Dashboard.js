@@ -23,7 +23,8 @@ const Dashboard = () => {
   const [selectedKey, setSelectedKey] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const token = useSelector((state) => state.token);
+  // const token = useSelector((state) => state.token);
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   // Columns to include company and HR information
   const columns = [
@@ -142,6 +143,10 @@ const Dashboard = () => {
   }, []);
 
   const showConfirmModal = (actionType, key) => {
+    if (!actionType || !key) {
+      console.error("Invalid actionType or key");
+      return;
+    }
     setAction(actionType);
     setSelectedKey(key);
     setIsModalVisible(true);
@@ -215,7 +220,7 @@ const Dashboard = () => {
         </div>
         <Modal
           title={`Confirm ${action === "approve" ? "Approval" : "Rejection"}`}
-          visible={isModalVisible}
+          open={isModalVisible}
           onOk={handleOk}
           onCancel={handleCancel}
           okText="Yes"

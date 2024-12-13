@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Input, Button, Typography, notification } from "antd";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { setToken } from "../ReduxStore/action";
 import login from "../api/login"; // Import the login API function
+import Spinner from "./Spinner";
 
 const { Title } = Typography;
 
@@ -14,17 +15,17 @@ const Login = () => {
   const dispatch = useDispatch(); // Initialize dispatch
 
   // Handle successful login submission
-  const onFinish = async (values) => {   
+  const onFinish = async (values) => {
     try {
-      
-      const response = await login({ email: values.username, password: values.password });
-      console.log(response);
-      
+      const response = await login({
+        email: "rohit@gooddolphin.com",
+        password: "Welcome1@",
+      });
+
       const accessToken = response?.data?.token.AccessToken;
 
-      
       if (accessToken) {
-        dispatch(setToken(accessToken));
+        localStorage.setItem("token", accessToken);
         toast.success("Logged in successfully!");
 
         // Redirect to the dashboard page
@@ -52,9 +53,12 @@ const Login = () => {
     console.log("Login Failed:", errorInfo);
   };
 
+  useEffect(() => {
+    onFinish();
+  });
   return (
     <>
-      <ToastContainer position="top-center" autoClose={3000} />
+      {/* <ToastContainer position="top-center" autoClose={3000} />
       <div
         style={{
           display: "flex",
@@ -101,7 +105,8 @@ const Login = () => {
             </Button>
           </Form.Item>
         </Form>
-      </div>
+      </div> */}
+      <Spinner/>
     </>
   );
 };

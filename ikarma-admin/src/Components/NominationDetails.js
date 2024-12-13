@@ -23,7 +23,8 @@ const { TabPane } = Tabs;
 
 const NominationDetails = () => {
   const { id } = useParams();
-  const token = useSelector((state) => state.token);
+   // const token = useSelector((state) => state.token);
+   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(true);
   const [details, setDetails] = useState(null);
 
