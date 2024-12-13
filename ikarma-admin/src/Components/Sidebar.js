@@ -88,7 +88,7 @@ const Sidebar = () => {
         {/* <Menu.Item key="2" icon={<GiftOutlined />}>
           Nominations
         </Menu.Item> */}
-        <Menu.Item key="3" icon={<CalendarOutlined />}>
+        {/* <Menu.Item key="3" icon={<CalendarOutlined />}>
           Events
         </Menu.Item>
         <Menu.Item key="4" icon={<CalendarOutlined />}>
@@ -96,7 +96,7 @@ const Sidebar = () => {
         </Menu.Item>
         <Menu.Item key="5" icon={<WalletOutlined />}>
           Wallet
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item key="6" icon={<BuildOutlined />}>
         Company List
         </Menu.Item>

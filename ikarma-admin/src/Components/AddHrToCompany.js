@@ -15,7 +15,8 @@ const CompanyForm = () => {
 
   const [hrDetails, setHrDetails] = useState([]); // State to store HR details
   const [form] = Form.useForm();
-  const token = useSelector((state) => state.token);
+  // const token = useSelector((state) => state.token);
+  const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(true);
 
   // Handle form submission

@@ -35,7 +35,8 @@ const getStatusColor = (status) => {
 const RecentNominations = () => {
   const [nominations, setNominations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const token = useSelector((state) => state.token);
+   // const token = useSelector((state) => state.token);
+   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
   useEffect(() => {

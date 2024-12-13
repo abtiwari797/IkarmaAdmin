@@ -11,7 +11,8 @@ import { useNavigate } from "react-router-dom";
 
 const CompnayList = () => {
     const [leaderboardData, setLeaderboardData] = useState([]);
-    const token = useSelector((state) => state.token);
+    // const token = useSelector((state) => state.token);
+    const token = localStorage.getItem("token");
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const columns = [

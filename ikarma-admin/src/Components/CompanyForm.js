@@ -13,7 +13,8 @@ const CompanyForm = () => {
   console.log("company info", company);
 
   const [form] = Form.useForm();
-  const token = useSelector((state) => state.token);
+  // const token = useSelector((state) => state.token);
+  const token = localStorage.getItem("token");
 
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);

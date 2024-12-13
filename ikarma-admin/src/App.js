@@ -4,7 +4,6 @@ import NominationDetails from "./Components/NominationDetails";
 import MainLayout from "./Components/MainLayout";  // Import the MainLayout
 import CompnayForm from "./Components/CompanyForm";
 import Login from "./Components/Login";
-import Protected from "./routes/Protected";
 import AddHrToCompany from "./Components/AddHrToCompany";
 import EditCompany from "./Components/EditCompany";
 import CompnayList from "./Components/CompanyLists";

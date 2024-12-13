@@ -17,7 +17,8 @@ const RecentEvents = () => {
   const [nominations, setNominations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const token = useSelector((state) => state.token);
+    // const token = useSelector((state) => state.token);
+    const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchNominations = async () => {
