@@ -64,7 +64,13 @@ const RecentEvents = () => {
   };
 
   if (loading) {
-    return <Spin size="large" />;
+    return (
+      <>
+        <div className="spinner2">
+          <img src="/spinner.gif" alt="" className="spin" />
+        </div>
+      </>
+    );
   }
 
   // Filter nominations with status >= 0 (or use all if there's no filtering logic)

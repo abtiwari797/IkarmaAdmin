@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { nominationFallback } from "../lib/nominationFallback";
-
+import Spinner from "../Components/Spinner";
 // Example of your response structure
 const getStatusColor = (status) => {
   switch (status) {
@@ -35,8 +35,8 @@ const getStatusColor = (status) => {
 const RecentNominations = () => {
   const [nominations, setNominations] = useState([]);
   const [loading, setLoading] = useState(true);
-   // const token = useSelector((state) => state.token);
-   const token = localStorage.getItem("token");
+  // const token = useSelector((state) => state.token);
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const RecentNominations = () => {
               Authorization: `Bearer ${token}`,
             },
           }
-        );       
+        );
         setNominations(response.data.data.nominationData || []);
       } catch (error) {
         console.error("Error fetching nominations:", error);
@@ -63,15 +63,23 @@ const RecentNominations = () => {
   }, []);
 
   if (loading) {
-    return <Spin size="large" />;
+    return (
+      <>
+        <div className="spinner2">
+          <img src="/spinner.gif" alt="" className="spin" />
+        </div>
+      </>
+    );
   }
 
   const handleCardClick = (id) => {
     navigate(`/nominationdetails/${id}`); // Navigate to the details page with the id
   };
 
-      // Filter nominations with status === 7
-      const filteredNominations = nominations.filter((nomination) => nomination.status >= 0);
+  // Filter nominations with status === 7
+  const filteredNominations = nominations.filter(
+    (nomination) => nomination.status >= 0
+  );
 
   return (
     <>
@@ -111,36 +119,35 @@ const RecentNominations = () => {
               </div>
             </div>
             <Tag
-  color={getStatusColor(nomination.status)}
-  style={{
-    position: "absolute",
-    top: "16px",
-    right: "16px",
-    fontSize: "12px",
-    borderRadius: "8px",
-  }}
->
-  {nomination.status === 0
-    ? "Draft"
-    : nomination.status === 1
-    ? "Nominated"
-    : nomination.status === 2
-    ? "Nominee Review"
-    : nomination.status === 3
-    ? "Witness Review"
-    : nomination.status === 4
-    ? "Rejected by Nominee"
-    : nomination.status === 5
-    ? "Cancelled"
-    : nomination.status === 6
-    ? "Withdrawn"
-    : nomination.status === 7
-    ? "HR Reviewed"
-    : nomination.status === 8
-    ? "Completed"
-    : "Unknown Status"}
-</Tag>
-
+              color={getStatusColor(nomination.status)}
+              style={{
+                position: "absolute",
+                top: "16px",
+                right: "16px",
+                fontSize: "12px",
+                borderRadius: "8px",
+              }}
+            >
+              {nomination.status === 0
+                ? "Draft"
+                : nomination.status === 1
+                ? "Nominated"
+                : nomination.status === 2
+                ? "Nominee Review"
+                : nomination.status === 3
+                ? "Witness Review"
+                : nomination.status === 4
+                ? "Rejected by Nominee"
+                : nomination.status === 5
+                ? "Cancelled"
+                : nomination.status === 6
+                ? "Withdrawn"
+                : nomination.status === 7
+                ? "HR Reviewed"
+                : nomination.status === 8
+                ? "Completed"
+                : "Unknown Status"}
+            </Tag>
           </Card>
         ))}
       </Col>

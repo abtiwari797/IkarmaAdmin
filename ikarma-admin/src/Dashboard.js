@@ -1,19 +1,12 @@
-import React, { useState,useEffect } from "react";
-import {
-  Row,
-  Col,
-  Card,
-  Table,
-  Button,
-  Modal
-} from "antd";
+import React, { useState, useEffect } from "react";
+import { Row, Col, Card, Table, Button, Modal } from "antd";
 import axios from "axios";
 import Statistics from "./Components/Statistics";
 import RecentNominations from "./Components/RecentNominations";
 import RecentEvents from "./Components/CompanyList";
 import RecentEvents2 from "./Components/RecentEvents2";
 import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -22,7 +15,7 @@ const Dashboard = () => {
   const [action, setAction] = useState(null);
   const [selectedKey, setSelectedKey] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   // const token = useSelector((state) => state.token);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -93,7 +86,7 @@ const Dashboard = () => {
       render: (text, record) => {
         const hasAccess = record.access; // Assuming `access` is a boolean
         const hasRequiredStatus = record.status >= 7;
-    
+
         if (hasAccess && hasRequiredStatus) {
           return (
             <div>
@@ -104,7 +97,10 @@ const Dashboard = () => {
               >
                 Accept
               </Button>
-              <Button danger onClick={() => showConfirmModal("reject", record.id)}>
+              <Button
+                danger
+                onClick={() => showConfirmModal("reject", record.id)}
+              >
                 Reject
               </Button>
             </div>
@@ -114,12 +110,10 @@ const Dashboard = () => {
         }
       },
     },
-    
   ];
 
   const fetchNominations = async () => {
     try {
-      setLoading(true);
       const response = await axios.get(
         "https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/home/list/company_id?pageSize=20&pageNumber=1",
         {
@@ -133,8 +127,6 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error fetching nominations:", error);
       toast.error("Failed to fetch leaderboard data.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -154,20 +146,24 @@ const Dashboard = () => {
 
   const handleOk = async () => {
     try {
-      const type = action === "approve" ? 1 : 2; 
+      setLoading(true);
+      setIsModalVisible(false);
+      const type = action === "approve" ? 1 : 2;
       const url = `https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/nomination/approve`;
-      const nominationId = selectedKey; 
+      const nominationId = selectedKey;
 
       const fullUrl = `${url}?nominationId=${nominationId}&type=${type}`;
 
       const response = await axios.get(fullUrl, {
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
         },
       });
-        
+
       if (response.data.resCode === 1) {
-        toast.success(`Entry ${type === 1 ? "approved" : "rejected"} successfully!`);
+        toast.success(
+          `Entry ${type === 1 ? "approved" : "rejected"} successfully!`
+        );
         fetchNominations();
       } else {
         throw new Error("Unexpected response status");
@@ -176,20 +172,23 @@ const Dashboard = () => {
       console.error(`Failed to ${action} entry:`, error);
       toast.error(`Failed to ${action} entry. Please try again.`);
     } finally {
-      setIsModalVisible(false);
+      setLoading(false);
     }
   };
-  
 
   const handleCancel = () => {
     setIsModalVisible(false);
   };
 
-
   return (
     <>
+      {loading && (
+        <div className="spinner3">
+          <img src="/spinner.gif" alt="" className="spin" />
+        </div>
+      )}
       <div style={{ background: "white" }}>
-      <ToastContainer position="top-center" autoClose={3000} />
+        <ToastContainer position="top-center" autoClose={3000} />
         <Statistics />
         <div className="details">
           <div className="details1">
@@ -202,7 +201,7 @@ const Dashboard = () => {
                 <Card title="Nominations">
                   {/* Table wrapper with custom overflow styles */}
                   <div className="table-wrapper">
-                  <Table
+                    <Table
                       columns={columns}
                       dataSource={leaderboardData}
                       pagination={false}
@@ -232,7 +231,10 @@ const Dashboard = () => {
           okText="Yes"
           cancelText="No"
         >
-          <p>Are you sure you want to {action === "approve" ? "approve" : "reject"} this entry?</p>
+          <p>
+            Are you sure you want to{" "}
+            {action === "approve" ? "approve" : "reject"} this entry?
+          </p>
         </Modal>
       </div>
     </>
