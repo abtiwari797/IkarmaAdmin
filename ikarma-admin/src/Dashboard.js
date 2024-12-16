@@ -202,13 +202,19 @@ const Dashboard = () => {
                 <Card title="Nominations">
                   {/* Table wrapper with custom overflow styles */}
                   <div className="table-wrapper">
-                    <Table
+                  <Table
                       columns={columns}
                       dataSource={leaderboardData}
                       pagination={false}
-                      scroll={{ x: 'max-content' }} // Enable horizontal scrolling
+                      scroll={{ x: "max-content" }} // Enable horizontal scrolling
                       onRow={(record) => ({
-                        onClick: () => navigate(`/nominationdetails/${record.id}`), // Navigate on row click
+                        onClick: (e) => {
+                          // Check if the clicked element is not the action button (Accept/Reject)
+                          if (!e.target.closest("button")) {
+                            navigate(`/nominationdetails/${record.id}`); // Navigate on row click
+                            // Navigate on row click
+                          }
+                        },
                       })}
                     />
                   </div>
