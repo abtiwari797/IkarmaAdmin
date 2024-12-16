@@ -16,12 +16,12 @@ const RecentEvents2 = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-   // const token = useSelector((state) => state.token);
-   const token = localStorage.getItem("token");
+  // const token = useSelector((state) => state.token);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchEvents = async () => {
-      console.log(" access token ",token)
+      console.log(" access token ", token);
       try {
         const response = await axios.get(
           "https://umbznza169.execute-api.us-east-2.amazonaws.com/hr/eventlist",
@@ -32,7 +32,7 @@ const RecentEvents2 = () => {
           }
         );
 
-        console.log(" response event list ",response.data.data)
+        console.log(" response event list ", response.data.data);
 
         setEvents(response.data.data || []);
       } catch (error) {
@@ -59,29 +59,44 @@ const RecentEvents2 = () => {
       seatColor = "green";
     } else if (remainingPercentage < 80) {
       seatStatus = "Limited seat";
-      seatColor = "orange"; 
+      seatColor = "orange";
     } else if (remainingPercentage < 85) {
       seatStatus = "Full";
-      seatColor = "red"; 
+      seatColor = "red";
     } else {
       seatStatus = "Full";
-      seatColor = "red"; 
+      seatColor = "red";
     }
 
     return {
       remainingSeats,
       seatStatus,
-      seatColor
+      seatColor,
     };
   };
 
   if (loading) {
-    return <Spin size="large" />;
+    return (
+      <>
+        <div className="spinner2">
+          <img src="/spinner.gif" alt="" className="spin" />
+        </div>
+      </>
+    );
   }
 
   return (
     <div className="custom-content-area events">
       <p className="heading">Company Events</p>
+      {events.length === 0 && (
+        <div style={{ textAlign: "center" }}>
+          <img
+            src="https://static.vecteezy.com/system/resources/previews/014/814/350/non_2x/an-icon-of-no-data-flat-editable-icon-vector.jpg"
+            alt=""
+            className="noData"
+          />
+        </div>
+      )}
       <Col className="custom-content-area row">
         {events.map((event) => (
           <Card
@@ -105,16 +120,16 @@ const RecentEvents2 = () => {
                   }}
                 />
                 {event.maxallowedparticipants > 0 && (
-                <Tag
-                color={calculateSeatAvailability(event).seatColor}
-                style={{
-                  position: "absolute",
-                  top: "10px",
-                  left: "10px",
-                }}
-              >
-                {`${calculateSeatAvailability(event).seatStatus}`}
-              </Tag>
+                  <Tag
+                    color={calculateSeatAvailability(event).seatColor}
+                    style={{
+                      position: "absolute",
+                      top: "10px",
+                      left: "10px",
+                    }}
+                  >
+                    {`${calculateSeatAvailability(event).seatStatus}`}
+                  </Tag>
                 )}
                 <Button
                   type="primary"

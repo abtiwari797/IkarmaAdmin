@@ -120,7 +120,13 @@ const CompanyForm = () => {
   ];
 
   if (loading) {
-    return <Spin size="large" />;
+    return (
+      <>
+        <div className="spinner2">
+          <img src="/spinner.gif" alt="" className="spin" />
+        </div>
+      </>
+    );
   }
 
   return (

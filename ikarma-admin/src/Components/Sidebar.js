@@ -22,18 +22,18 @@ const Sidebar = () => {
         return "1";  // Dashboard
       case "/nominationdetails":
         return "2";  // Nominations
-      case "/":
-        return "3";  // Events
+      case "/addhr":
+      case "/companylist":  // Both paths should map to the same menu item (Company List)
+        return "6";  // Company List
       case "/":
         return "4";  // Leaderboard
-      case "/":
+      case "/wallet":
         return "5";  // Wallet
-      case "/companylist":
-        return "6";  // Add Company
       default:
         return "1"; // Default to Dashboard if path doesn't match
     }
   };
+  
 
   return (
     <Sider
@@ -65,7 +65,7 @@ const Sidebar = () => {
               path = "/nominationdetails";
               break;
             case "3":
-              path = "/";
+              path = "/companylist";
               break;
             case "4":
               path = "/";
