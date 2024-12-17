@@ -26,6 +26,8 @@ const Dashboard = () => {
       dataIndex: "name",
       key: "name",
       align: "center",
+      sorter: (a, b) => a.name.localeCompare(b.name), // Sort alphabetically
+    sortDirections: ["ascend", "descend"],
     },
     {
       title: "Nominated By",
@@ -38,14 +40,28 @@ const Dashboard = () => {
       dataIndex: "status",
       key: "status",
       align: "center",
+      filters: [
+        { text: "Pending", value: "Pending" },
+        { text: "Approved", value: "Approved" },
+      ],
+      onFilter: (value, record) => {
+        const statusText = record.status === 3 ? "Approved" : "Pending";
+        return statusText === value;
+      },
       render: (status) => (status === 3 ? "Approved" : "Pending"),
+      sorter: (a, b) => {
+        const statusA = a.status === 3 ? "Approved" : "Pending";
+        const statusB = b.status === 3 ? "Approved" : "Pending";
+        return statusA.localeCompare(statusB);
+      },
+      sortDirections: ["ascend", "descend"],
     },
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      align: "center",
-    },
+    // {
+    //   title: "ID",
+    //   dataIndex: "id",
+    //   key: "id",
+    //   align: "center",
+    // },
     {
       title: "Created Date",
       dataIndex: "created_date",
@@ -58,6 +74,7 @@ const Dashboard = () => {
       dataIndex: "hr_approver",
       key: "hr_approver",
       align: "center",
+      render: () => "Rohit",
     },
     // {
     //   title: "Access",
