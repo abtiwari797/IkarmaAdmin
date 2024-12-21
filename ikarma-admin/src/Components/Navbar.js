@@ -116,6 +116,18 @@ const Navbar = () => {
           >
             Refresh
           </Button>
+          <Text
+            style={{
+              fontSize: "16px",
+              marginLeft: "20px",
+            }}
+            onClick={() => {
+              localStorage.removeItem("token");
+              window.location.reload();
+            }}
+          >
+            Logout
+          </Text>
         </Row>
 
         {/* Middle - Search Input */}
